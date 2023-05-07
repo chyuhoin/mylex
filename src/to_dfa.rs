@@ -1,4 +1,4 @@
-use std::{collections::{BTreeMap, HashMap, BTreeSet}};
+use std::{collections::{BTreeMap, BTreeSet}};
 use crate::charset::get_charset;
 use crate::charset::is_letter;
 
@@ -199,11 +199,11 @@ fn print_nfa(nfa :&Graph<i32, char>) {
 BFS的过程中只允许经过空串边
 BFS的过程中到达的所有点组成的集合就是从x出发的闭包
 */
-fn get_closure(nfa :&Graph<i32, char>, x: i32) -> Vec<i32> {
+pub fn get_closure<V: Ord + Copy>(nfa :&Graph<V, char>, x: V) -> Vec<V> {
     let mut q = Vec::new(); //用来做BFS的队列
     let (mut hen, mut tai) = (0, 0); //队列的头尾
     let mut ans = Vec::new(); //闭包集合
-    let mut vis = HashMap::new();
+    let mut vis = BTreeMap::new();
 
     //BFS的具体过程
     q.push(x); vis.insert(x, 1); ans.push(x);
@@ -239,11 +239,11 @@ fn get_closure(nfa :&Graph<i32, char>, x: i32) -> Vec<i32> {
 然后从这个点集里的每个点出发，做和上面一样的BFS
 最终得到一个闭包，这个闭包就是新状态
 */
-fn get_move_closure(nfa: &Graph<i32, char>, state: &Vec<i32>, ch: char) -> Vec<i32> {
+pub fn get_move_closure<V: Ord + Copy>(nfa: &Graph<V, char>, state: &Vec<V>, ch: char) -> Vec<V> {
     let mut q = Vec::new();
     let (mut hen, mut tai) = (0, 0);
     let mut ans = Vec::new();
-    let mut vis = HashMap::new();
+    let mut vis = BTreeMap::new();
 
     //第一步：获得x出发经过一次ch边到达的点集
     for u in state {
@@ -288,7 +288,7 @@ fn get_move_closure(nfa: &Graph<i32, char>, state: &Vec<i32>, ch: char) -> Vec<i
     return ans;
 }
 
-pub fn equal_vector(v1: &Vec<i32>, v2: &Vec<i32>) -> bool {
+pub fn equal_vector<V: Ord + Copy>(v1: &Vec<V>, v2: &Vec<V>) -> bool {
     if v1.len() != v2.len() {return false;}
     for i in 0..v1.len() {
         if v1[i] != v2[i] {
@@ -310,7 +310,7 @@ DFA的起点就是NFA的起点所在的闭包，编号设为1
 等到所有点都扩展过了，算法就结束。
 不过这个算法的时间复杂度有点感人哈~毕竟最坏的情况下，时间复杂度相当于子集个数，是指数级的
 */
-pub fn nfa_to_dfa(nfa: &Graph<i32, char>,bgn: i32, end: i32, ends: &mut Vec<i32>) -> Graph<i32, char> {
+fn nfa_to_dfa(nfa: &Graph<i32, char>,bgn: i32, end: i32, ends: &mut Vec<i32>) -> Graph<i32, char> {
     let mut dfa = Graph::new();
     let start_state = get_closure(nfa, bgn);
     let mut states = Vec::new();
