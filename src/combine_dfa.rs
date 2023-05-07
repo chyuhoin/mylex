@@ -5,7 +5,7 @@ use std::cmp::{Ord, PartialOrd, Ordering, min};
 /*
 这是一个标准化的Vertex节点，用在最终合并之后的DFA里面
 id表示节点的编号，end表示节点是哪个正则表达式的结束位置
-如果end为0，说明这个点不是任何一个正则表达式的结束位置
+如果end为-1，说明这个点不是任何一个正则表达式的结束位置
 如果有多个正则表达式都可以在这个点结束，选择出现最早(编号最小)的那个表达式
  */
 #[derive(Eq, PartialEq, Clone, Copy)]
@@ -27,6 +27,20 @@ impl Ord for Vertex {
 }
 
 /*
+输出一个Vertex标准化的DFA
+ */
+pub fn print_standard_dfa(dfa :&Dfa<Vertex, char>) {
+    for (u, edges) in &dfa.graph {
+        for e in edges {
+            println!("{} {} {}", u.id, e.0.id, e.1);
+        }
+    }
+    for u in &dfa.points {
+        print!("[id: {}, end: {}]", u.id, u.end)
+    }
+}
+
+/*
 使用原先dfa上的点构造出一个标准的Vertex节点。
 dfa是原图，v是原图上点的编号，i表示这是第i个图，offset表示原图到综合图的id偏移量
  */
@@ -37,11 +51,11 @@ fn construct_vertex(dfa: &Dfa<i32, char>, v: i32, i: usize, offset: i32) -> Vert
 fn get_end(state: &Vec<Vertex>) -> i32 {
     let mut res = 100000;
     for v in state {
-        if v.end != 0 {
+        if v.end != -1 {
             res = min(res, v.end);
         }
     }
-    if res == 100000 {return 0;}
+    if res == 100000 {return -1;}
     return res;
 }
 
@@ -53,7 +67,7 @@ fn to_final_dfa(nfa: &Graph<Vertex, char>, bgn: Vertex) -> Dfa<Vertex, char> {
     let mut tag: Vec<Vertex> = Vec::new();
     let mut points = 1;
     states.push(start_state);
-    vis.push(false); tag.push(Vertex { id: points, end: 0 });
+    vis.push(false); tag.push(Vertex { id: points, end: -1 });
 
     loop {
         //第一步：寻找一个还没出现过的状态state
@@ -95,12 +109,12 @@ fn to_final_dfa(nfa: &Graph<Vertex, char>, bgn: Vertex) -> Dfa<Vertex, char> {
         }
     }
 
-    return Dfa { graph: dfa.clone(), points: get_all_vertex(&dfa), start: Vertex { id: points, end: 0 }, ends: Vec::new() };
+    return Dfa { graph: dfa.clone(), points: get_all_vertex(&dfa), start: Vertex { id: points, end: -1 }, ends: Vec::new() };
 }
 
 pub fn combine(dfas: &Vec<Dfa<i32, char>>) -> Dfa<Vertex, char> {
     let mut res_graph = Graph::new();
-    let start = Vertex{id: 1, end: 0};
+    let start = Vertex{id: 1, end: -1};
     let mut offset = 1;
     for (i, dfa) in dfas.iter().enumerate() {
         let dfa_start = construct_vertex(dfa, dfa.start, i, offset);

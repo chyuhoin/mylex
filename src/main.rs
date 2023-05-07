@@ -7,6 +7,7 @@ mod combine_dfa;
 
 use input::replace_reg;
 
+use crate::combine_dfa::{combine, print_standard_dfa};
 use crate::input::div_reg_action;
 use crate::minimize_dfa::minimize_dfa;
 use crate::input::init;
@@ -19,10 +20,11 @@ fn main() {
     // for sent in longtxt {
     //     print!("-------------\n[[{}]] [[{}]]\n--------------\n", sent.reg, sent.action);
     // }
-    let s = &translate_reg("[ac]+u[0-9]*");
-    println!("{}", translate_reg(s));
-    let dfa = convert(s);
-    let min_dfa = minimize_dfa(&dfa);
-    print_dfa(&min_dfa.graph);
-    println!("{} {:?}", min_dfa.start, min_dfa.ends);
+    let dfas = vec![
+        minimize_dfa(&convert(&translate_reg("[a-c]+"))),
+        minimize_dfa(&convert(&translate_reg("s[1-3]*"))),
+        minimize_dfa(&convert(&translate_reg("o[z9]?")))
+    ];
+    let final_dfa = combine(&dfas);
+    print_standard_dfa(&final_dfa);
 }
