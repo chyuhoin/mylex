@@ -386,7 +386,7 @@ pub fn convert(reg: &str) -> Dfa<i32, char> {
     // println!("{}", suffix);
     
     build_nfa(&mut nfa, &suffix, &mut bgn, &mut end);
-    print_nfa(&nfa);
+    // print_nfa(&nfa);
     // println!("bgn = {}  end = {}", bgn, end);
 
     let mut ends = Vec::new();
