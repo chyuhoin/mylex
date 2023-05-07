@@ -59,6 +59,10 @@ fn get_end(state: &Vec<Vertex>) -> i32 {
     return res;
 }
 
+/*
+将合并出的NFA转为DFA，算法和之前的NFA转DFA一模一样（其实是复制的代码）
+由于同样使用的是子集化算法，所以该函数里面调用的to_dfa模块里面的两个求闭包的函数
+ */
 fn to_final_dfa(nfa: &Graph<Vertex, char>, bgn: Vertex) -> Dfa<Vertex, char> {
     let mut dfa: Graph<Vertex, char> = Graph::new();
     let start_state = get_closure(nfa, bgn);
@@ -112,6 +116,11 @@ fn to_final_dfa(nfa: &Graph<Vertex, char>, bgn: Vertex) -> Dfa<Vertex, char> {
     return Dfa { graph: dfa.clone(), points: get_all_vertex(&dfa), start: Vertex { id: points, end: -1 }, ends: Vec::new() };
 }
 
+/*
+使用暴力方法合并多个DFA
+原理是创建一个新的起点，然后从这个起点向所有DFA的起点连一条空串边，构造出一个NFA
+然后对这个NFA做确定化，转成DFA即可
+ */
 pub fn combine(dfas: &Vec<Dfa<i32, char>>) -> Dfa<Vertex, char> {
     let mut res_graph = Graph::new();
     let start = Vertex{id: 1, end: -1};
