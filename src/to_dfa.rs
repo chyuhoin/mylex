@@ -18,7 +18,7 @@ pub fn add_edge<V: Ord + Copy, E: Ord>(graph: &mut Graph<V, E>, u: V, v: V, c: E
 }
 
 //获得dfa里面的所有点集
-pub fn get_all_vertex<V: Ord>(dfa: &Graph<V, char>) -> BTreeSet<V>{
+pub fn get_all_vertex<V: Ord + Copy>(dfa: &Graph<V, char>) -> BTreeSet<V>{
     let mut set = BTreeSet::new();
     for (v, edges) in dfa {
         set.insert(*v);
