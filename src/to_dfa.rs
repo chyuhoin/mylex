@@ -1,4 +1,4 @@
-use std::{collections::{BTreeMap, HashMap, HashSet}};
+use std::{collections::{BTreeMap, HashMap, BTreeSet}};
 use crate::charset::get_charset;
 use crate::charset::is_letter;
 
@@ -7,7 +7,7 @@ pub type Graph<V, E> = BTreeMap<V, Vec<(V, E)>>;
 
 pub struct Dfa<V, E> {
     pub graph: Graph<V, E>,
-    pub points: HashSet<V>,
+    pub points: BTreeSet<V>,
     pub start: V,
     pub ends: Vec<V>
 }
@@ -18,8 +18,8 @@ pub fn add_edge<V: Ord + Copy, E: Ord>(graph: &mut Graph<V, E>, u: V, v: V, c: E
 }
 
 //获得dfa里面的所有点集
-pub fn get_all_vertex(dfa: &Graph<i32, char>) -> HashSet<i32>{
-    let mut set = HashSet::new();
+pub fn get_all_vertex<V: Ord>(dfa: &Graph<V, char>) -> BTreeSet<V>{
+    let mut set = BTreeSet::new();
     for (v, edges) in dfa {
         set.insert(*v);
         for (p, _) in edges {
@@ -310,7 +310,7 @@ DFA的起点就是NFA的起点所在的闭包，编号设为1
 等到所有点都扩展过了，算法就结束。
 不过这个算法的时间复杂度有点感人哈~毕竟最坏的情况下，时间复杂度相当于子集个数，是指数级的
 */
-fn nfa_to_dfa(nfa: &Graph<i32, char>,bgn: i32, end: i32, ends: &mut Vec<i32>) -> Graph<i32, char> {
+pub fn nfa_to_dfa(nfa: &Graph<i32, char>,bgn: i32, end: i32, ends: &mut Vec<i32>) -> Graph<i32, char> {
     let mut dfa = Graph::new();
     let start_state = get_closure(nfa, bgn);
     let mut states = Vec::new();
