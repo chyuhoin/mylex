@@ -1,5 +1,6 @@
-use crate::to_dfa::{Graph, Dfa, get_all_vertex, add_edge, nfa_to_dfa};
-use std::cmp::{Ord, PartialOrd, Ordering};
+use crate::to_dfa::{Graph, Dfa, get_all_vertex, add_edge, get_closure, get_move_closure, equal_vector};
+use crate::charset::get_charset;
+use std::cmp::{Ord, PartialOrd, Ordering, min};
 
 /*
 这是一个标准化的Vertex节点，用在最终合并之后的DFA里面
@@ -33,10 +34,73 @@ fn construct_vertex(dfa: &Dfa<i32, char>, v: i32, i: usize, offset: i32) -> Vert
     return Vertex { id: v + offset, end: if dfa.ends.contains(&v) {i as i32} else {0} };
 }
 
+fn get_end(state: &Vec<Vertex>) -> i32 {
+    let mut res = 100000;
+    for v in state {
+        if v.end != 0 {
+            res = min(res, v.end);
+        }
+    }
+    if res == 100000 {return 0;}
+    return res;
+}
+
+fn to_final_dfa(nfa: &Graph<Vertex, char>, bgn: Vertex) -> Dfa<Vertex, char> {
+    let mut dfa: Graph<Vertex, char> = Graph::new();
+    let start_state = get_closure(nfa, bgn);
+    let mut states = Vec::new();
+    let mut vis = Vec::new();
+    let mut tag: Vec<Vertex> = Vec::new();
+    let mut points = 1;
+    states.push(start_state);
+    vis.push(false); tag.push(Vertex { id: points, end: 0 });
+
+    loop {
+        //第一步：寻找一个还没出现过的状态state
+        let mut state: i32 = -1;
+        for i in 0..states.len() {
+            if vis[i] == false {
+                state = i as i32;
+                break;
+            }
+        }
+        if state == -1 {break;}
+        vis[state as usize] = true;
+
+        //第二步：枚举字符，对state进行扩展
+        for ch in get_charset() {
+            let new_state = get_move_closure(nfa, &states[state as usize], ch);
+            if new_state.len() == 0 {continue;}
+
+            //判断一下new_state是不是没出现过的状态
+            let mut now: i32 = -1;
+            for i in 0..states.len() {
+                if equal_vector(&states[i], &new_state) {
+                    now = i as i32 + 1; //DFA的点集是从1开始，但是Vec的下标是从0开始，所以要+1
+                    break;
+                }
+            }
+
+            //如果new_state确实是没出现过的状态，那么就在DFA里面新创一个状态给它
+            if now == -1 {
+                states.push(new_state.clone());
+                vis.push(false);
+                points = points + 1;
+                now = points;
+                tag.push(Vertex { id: now, end: get_end(&new_state) });
+            }
+
+            //连边
+            add_edge(&mut dfa, tag[state as usize], tag[now as usize - 1], ch);
+        }
+    }
+
+    return Dfa { graph: dfa.clone(), points: get_all_vertex(&dfa), start: Vertex { id: points, end: 0 }, ends: Vec::new() };
+}
+
 pub fn combine(dfas: &Vec<Dfa<i32, char>>) -> Dfa<Vertex, char> {
     let mut res_graph = Graph::new();
     let start = Vertex{id: 1, end: 0};
-    let ends = Vec::new();
     let mut offset = 1;
     for (i, dfa) in dfas.iter().enumerate() {
         let dfa_start = construct_vertex(dfa, dfa.start, i, offset);
@@ -54,5 +118,5 @@ pub fn combine(dfas: &Vec<Dfa<i32, char>>) -> Dfa<Vertex, char> {
         }
         offset += dfa.points.len() as i32;
     }
-    return Dfa { graph: res_graph.clone(), points: get_all_vertex(&res_graph), start, ends }
+    return to_final_dfa(&res_graph, start);
 }

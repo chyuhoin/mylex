@@ -383,15 +383,15 @@ pub fn convert(reg: &str) -> Dfa<i32, char> {
     let mut end = 0;
 
     let suffix = infix_to_suffix(&reg);
-    println!("{}", suffix);
+    // println!("{}", suffix);
     
     build_nfa(&mut nfa, &suffix, &mut bgn, &mut end);
     print_nfa(&nfa);
-    println!("bgn = {}  end = {}", bgn, end);
+    // println!("bgn = {}  end = {}", bgn, end);
 
     let mut ends = Vec::new();
     let dfa = nfa_to_dfa(&nfa, bgn, end, &mut ends);
-    print_dfa(&dfa);
-    print!("{:?}", ends);
+    // print_dfa(&dfa);
+    // print!("{:?}", ends);
     return Dfa { graph: dfa.clone(), points: get_all_vertex(&dfa), start: 1, ends }
 }
