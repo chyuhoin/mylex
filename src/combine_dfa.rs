@@ -10,8 +10,8 @@ id表示节点的编号，end表示节点是哪个正则表达式的结束位置
  */
 #[derive(Eq, PartialEq, Clone, Copy)]
 pub struct Vertex {
-    id: i32,
-    end: i32
+    pub id: i32,
+    pub end: i32
 }
 
 impl PartialOrd for Vertex {
@@ -132,7 +132,7 @@ pub fn combine(dfas: &Vec<Dfa<i32, char>>) -> Dfa<Vertex, char> {
         //枚举dfa里面所有的边，把它连到最终的图里面
         for u in &dfa.points {
             let from = construct_vertex(dfa, *u, i, offset);
-            for e in dfa.graph.get(&u) {
+            if let Some(e) = dfa.graph.get(&u) {
                 for v in e {
                     let to = construct_vertex(dfa, v.0, i, offset);
                     add_edge(&mut res_graph, from, to, v.1);

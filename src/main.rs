@@ -12,12 +12,13 @@ use crate::combine_dfa::{combine, print_standard_dfa};
 use crate::input::div_reg_action;
 use crate::minimize_dfa::minimize_dfa;
 use crate::input::init;
+use crate::output::print_partA;
 use crate::trans::translate_reg;
 use crate::to_dfa::{convert, print_dfa};
 
 fn main() {
-    let s = init("test.l");
-    print!("{}", s[2]);
+    let s = init("../test.l");
+    //print_partA(&s[0]);
     let longtxt = replace_reg(&s[1], &div_reg_action(&s[2]));
     let mut dfas = Vec::new();
     for sent in longtxt {
@@ -28,11 +29,4 @@ fn main() {
     }
     let final_dfa = combine(&dfas);
     print_standard_dfa(&final_dfa);
-    // let dfas = vec![
-    //     &convert(&translate_reg("[a-c]+"))),
-    //     minimize_dfa(&convert(&translate_reg("s[1-3]*"))),
-    //     minimize_dfa(&convert(&translate_reg("o[z9]?")))
-    // ];
-    // let final_dfa = combine(&dfas);
-    // print_standard_dfa(&final_dfa);
 }
