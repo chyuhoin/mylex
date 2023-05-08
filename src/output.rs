@@ -16,7 +16,10 @@ fn get_output_file() -> File{
 输出partA是头文件、宏定义和函数定义等信息，原封不动复制即可
  */
 pub fn print_part_a(text: &str) {
-    let mut file = get_output_file();
+    let mut file = OpenOptions::new()
+        .write(true)
+        .open("lex.yy.c")
+        .unwrap();
     let shader = format!(r#"
 #include <stdio.h>
 #include <stdlib.h>
