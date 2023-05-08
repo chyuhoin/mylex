@@ -13,6 +13,7 @@ pub fn translate_ch(reg: &str) -> String {
                         't' => {ans.push('\t')}
                         'n' => {ans.push('\n')}
                         'r' => {ans.push('\r')}
+                        's' => {ans.push(' ')}
                         _ => {panic!("Wrong escape character!")}
                     }
                     conv = false

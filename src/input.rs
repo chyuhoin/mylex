@@ -87,8 +87,9 @@ pub fn div_reg_action(longtext: &str) -> Vec<Sentence> {
         }
 
         if !in_braces {
+            current.reg = String::from(current.reg.trim());
             current.action = String::from(current.action.trim());
-            sentences.push(current);
+            if current.reg.len() != 0 {sentences.push(current);}
             current = Sentence{reg: String::from(""), action: String::from("")};
         }
         

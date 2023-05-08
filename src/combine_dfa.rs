@@ -32,7 +32,7 @@ impl Ord for Vertex {
 pub fn print_standard_dfa(dfa :&Dfa<Vertex, char>) {
     for (u, edges) in &dfa.graph {
         for e in edges {
-            println!("{} {} {}", u.id, e.0.id, e.1);
+            println!("{} {} {:?}", u.id, e.0.id, e.1);
         }
     }
     for u in &dfa.points {
@@ -45,7 +45,7 @@ pub fn print_standard_dfa(dfa :&Dfa<Vertex, char>) {
 dfa是原图，v是原图上点的编号，i表示这是第i个图，offset表示原图到综合图的id偏移量
  */
 fn construct_vertex(dfa: &Dfa<i32, char>, v: i32, i: usize, offset: i32) -> Vertex {
-    return Vertex { id: v + offset, end: if dfa.ends.contains(&v) {i as i32} else {0} };
+    return Vertex { id: v + offset, end: if dfa.ends.contains(&v) {i as i32} else {-1} };
 }
 
 fn get_end(state: &Vec<Vertex>) -> i32 {
