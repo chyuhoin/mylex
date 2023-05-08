@@ -3,8 +3,7 @@
    int mark=0;
 %}
 
-ALPHA [a-zA-Z]
-MARK  {ALPHA}+[a-zA-Z0-9_]*
+MARK  [a-zA-Z]+[a-zA-Z0-9_]*
 KEY   if|else|int|double|return
 
 %%
