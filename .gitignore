@@ -1,4 +1,4 @@
 /target
-/src/*.c
-/src/*.exe
-/src/*.pdb
+*.c
+*.exe
+*.pdb
