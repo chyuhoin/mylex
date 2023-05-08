@@ -14,6 +14,7 @@ pub fn translate_ch(reg: &str) -> String {
                         'n' => {ans.push('\n')}
                         'r' => {ans.push('\r')}
                         's' => {ans.push(' ')}
+                        '.' => {ans.push('.')}
                         _ => {panic!("Wrong escape character!")}
                     }
                     conv = false

@@ -4,7 +4,7 @@
 */
 pub fn is_letter(ch: char) -> bool {
     (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') ||
-    (ch == '\n') || (ch == '\t') || (ch == '\r') || (ch == ' ')
+    (ch == '\n') || (ch == '\t') || (ch == '\r') || (ch == ' ') || (ch == '.') || (ch == ';')
 }
 
 pub fn get_charset() -> Vec<char> {
