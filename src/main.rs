@@ -17,7 +17,7 @@ use crate::trans::translate_reg;
 use crate::to_dfa::{convert, print_dfa};
 
 fn main() {
-    let s = init("../test.l");
+    let s = init("../minic.l");
     print_part_a(&s[0]);
     let longtxt = replace_reg(&s[1], &div_reg_action(&s[2]));
     let mut dfas = Vec::new();
