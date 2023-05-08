@@ -4,6 +4,7 @@ mod to_dfa;
 mod charset;
 mod minimize_dfa;
 mod combine_dfa;
+mod output;
 
 use input::replace_reg;
 
