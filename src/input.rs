@@ -109,9 +109,19 @@ pub fn replace_reg(deftxt: &str, sents: &Vec<Sentence>) -> Vec<Sentence> {
         mapping.insert(format!("{{{}}}", define), reg);
     }
 
+    let mut defines: Vec<(&String, String)> = Vec::new();
+
+    for (def, reg) in &mapping {
+        let mut new_reg = reg.clone().to_string();
+        for (k, v) in &defines {
+            new_reg = new_reg.replace(&k[..], v);
+        }
+        defines.push((def, new_reg));
+    }
+
     for sent in sents {
         let (mut reg, act) = (sent.reg.clone(), sent.action.clone());
-        for (k, v) in &mapping {
+        for (k, v) in &defines {
             reg = reg.replace(&k[..], v);
         }
         result.push(Sentence { reg, action: act });
