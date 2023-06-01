@@ -81,6 +81,7 @@ pub fn div_reg_action(longtext: &str) -> Vec<Sentence> {
                 if in_reg {current.reg.push(*ch as char);}
                 else {
                     if *ch == b'{' {in_braces = true;}
+                    if *ch == b'}' {in_braces = false;}
                     current.action.push(*ch as char);
                 }
             }

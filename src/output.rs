@@ -30,10 +30,10 @@ pub fn print_part_a(text: &str) {
 {}
 FILE* yyin = NULL;
 FILE* yyout = NULL;
-char *yytext;
+char *yytext = NULL;
 int yyleng = 0;
 int yywarp();
-void yylex();
+int yylex();
     "#, text);
     if let Err(e) = writeln!(file, "{}\n", shader.trim()) {
         println!("cannot write: {}", e);
@@ -106,7 +106,7 @@ void add_edge(int x, int y, char c) {{
 pub fn print_part_d(sents: &Vec<Sentence>) {
     let mut action_string = String::from("");
     for (i, sent) in sents.iter().enumerate() {
-        if sent.action == "." {
+        if sent.reg == "." {
             let one_action = format!("        default: {{{} break;}}\n", sent.action);
         action_string.push_str(&one_action);
         } else {
@@ -117,21 +117,24 @@ pub fn print_part_d(sents: &Vec<Sentence>) {
 
     let mut file = get_output_file();
     let shader = format!(r#"
-void yywork(int work) {{
+int yywork(int work) {{
     switch (work) {{
         {}
     }}
+    return 0;
 }}
 
 int yy_state;
-void yy_match(char c) {{
+int yy_match(char c) {{
     int forward = yy_dfa[yy_state][c];
+    int res = 0;
     if(forward == 0) {{
-        yywork(yy_vertexs_tag[yy_state]);
+        res = yywork(yy_vertexs_tag[yy_state]);
         forward = yy_dfa[1][c];
         yyleng = 0;
     }}
     yy_state = forward;
+    return res;
 }}
     "#, action_string.trim());
     if let Err(e) = writeln!(file, "{}\n", shader.trim()) {
@@ -155,16 +158,19 @@ void yyinit() {{
     yy_state = 1;
 }}
 
-void yylex() {{
-    yyinit();
+int yylex() {{
+    if(yytext == NULL) yyinit();
+    int res = 0;
 
     while(1) {{
         char c = fgetc(yyin);
         if (feof(yyin))  break;
-        yy_match(c);
+        res = yy_match(c);
         yytext[yyleng++] = c;
+        if (res != 0) break;
     }}
 
+    return res;
 }}
 {}
     "#, text);

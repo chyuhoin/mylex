@@ -9,7 +9,7 @@ pub fn is_letter(ch: char) -> bool {
     (ch == '\n') || (ch == '\t') || (ch == '\r') || (ch == ' ') || (ch == '.') || (ch == ';') ||
     (ch == 1 as char) || (ch == '-') || (ch == 2 as char) || (ch == '/') || (ch == '=') || (ch == ',') ||
     (ch == 3 as char) || (ch == 4 as char) || (ch == 5 as char) || (ch == 6 as char) || (ch == 7 as char) ||
-    (ch == 8 as char)
+    (ch == 8 as char) || (ch == '>') || (ch == '<') || (ch == '!')
 }
 
 pub fn get_charset() -> Vec<char> {
@@ -40,7 +40,7 @@ pub fn fix_str(ori: &str) -> String {
 }
 
 pub fn to_origin_ch(ch: char) -> char {
-    match (ch as u8) {
+    match ch as u8 {
         1 => {return '+';}
         2 => {return '*';}
         3 => {return '(';}
