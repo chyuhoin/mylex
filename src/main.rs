@@ -8,6 +8,7 @@ mod output;
 
 use input::replace_reg;
 
+use crate::charset::fix_str;
 use crate::combine_dfa::{combine, print_standard_dfa};
 use crate::input::div_reg_action;
 use crate::minimize_dfa::minimize_dfa;
@@ -17,13 +18,20 @@ use crate::trans::translate_reg;
 use crate::to_dfa::{convert, print_dfa};
 
 fn main() {
-    let s = init("../test.l");
+    let s = init("../minic.l");
     print_part_a(&s[0]);
     let longtxt = replace_reg(&s[1], &div_reg_action(&s[2]));
     let mut dfas = Vec::new();
     for sent in &longtxt {
-        if sent.reg.starts_with("\"") || sent.reg.starts_with(".") {continue;}
-        let tmp_dfa = minimize_dfa(&convert(&translate_reg(&sent.reg)));
+        let mut pattern = sent.reg.clone();
+        if sent.reg.starts_with(".") {continue;}
+        else if sent.reg.starts_with("\"") {
+            let tmp_strs: Vec<&str> = sent.reg.split("\"").filter(|s| !s.is_empty()).collect();
+            pattern = fix_str(tmp_strs[0])
+        }
+        else {pattern = translate_reg(&pattern)}
+        print!("{}", &pattern);
+        let tmp_dfa = minimize_dfa(&convert(&pattern));
         dfas.push(tmp_dfa);
     }
     let final_dfa = combine(&dfas);

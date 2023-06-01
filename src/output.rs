@@ -1,5 +1,6 @@
 use std::fs::{OpenOptions, File};
 use std::io::prelude::*;
+use crate::charset::to_origin_ch;
 use crate::input::Sentence;
 use crate::to_dfa::Dfa;
 use crate::combine_dfa::Vertex;
@@ -47,7 +48,7 @@ pub fn print_part_b(dfa :&Dfa<Vertex, char>) {
     for u in &dfa.points {
         if let Some(e) = dfa.graph.get(&u) {
             for v in e {
-                let one_edge = format!("    {{{}, {}, {:?}}},\n", u.id, v.0.id, v.1);
+                let one_edge = format!("    {{{}, {}, {:?}}},\n", u.id, v.0.id, to_origin_ch(v.1));
                 edge_string.push_str(&one_edge);
                 edge_num += 1;
             }

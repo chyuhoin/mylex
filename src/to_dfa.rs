@@ -38,7 +38,7 @@ pub fn get_all_vertex<V: Ord + Copy>(dfa: &Graph<V, char>) -> BTreeSet<V>{
 fn insert_linker(origin: &str) -> String {
     let mut ans = String::new();
     let mut pre: char;
-    let mut now = '#';
+    let mut now = '\0';
     for i in origin.chars() {
         pre = now;
         now = i;

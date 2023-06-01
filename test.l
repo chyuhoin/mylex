@@ -19,7 +19,7 @@ VALUE [1-9]+[0-9]*|[0-9]+\.[0-9]+
 			else 
 				statue=2;
 		}
-{VAR}   strcpy(name,yytext);
+{VAR}   strncpy(name,yytext,yyleng);
 {VALUE} {
 			if (statue==1)
 				sscanf(yytext,"%d",&val_int);
@@ -28,9 +28,9 @@ VALUE [1-9]+[0-9]*|[0-9]+\.[0-9]+
 		}
 ;		{
 			if (statue==1)
-				printf("<%s,int,%d>",name,val_int);
+				printf("<%s,int,%d>\n",name,val_int);
 			else if (statue==2)
-				printf("<%s,double,%lf>",name,val_double);
+				printf("<%s,double,%lf>\n",name,val_double);
 		}
 \n		printf("\n");
 .
