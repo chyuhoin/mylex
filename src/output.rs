@@ -19,6 +19,7 @@ fn get_output_file() -> File{
 pub fn print_part_a(text: &str) {
     let mut file = OpenOptions::new()
         .write(true)
+        .truncate(true)
         .open("lex.yy.c")
         .unwrap();
     let shader = format!(r#"
