@@ -18,6 +18,7 @@ fn get_output_file() -> File{
  */
 pub fn print_part_a(text: &str) {
     let mut file = OpenOptions::new()
+        .create(true)
         .write(true)
         .truncate(true)
         .open("lex.yy.c")

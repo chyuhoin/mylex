@@ -7,6 +7,7 @@ mod combine_dfa;
 mod output;
 
 use input::replace_reg;
+use std::env;
 
 use crate::charset::fix_str;
 use crate::combine_dfa::{combine, print_standard_dfa};
@@ -18,7 +19,12 @@ use crate::trans::translate_reg;
 use crate::to_dfa::{convert, print_dfa};
 
 fn main() {
-    let s = init("../test.l");
+    let args: Vec<String> = env::args().collect();
+    if args.len() <= 1 {
+        print!("No file name");
+        return
+    }
+    let s = init(&args[1]);
     print_part_a(&s[0]);
     let longtxt = replace_reg(&s[1], &div_reg_action(&s[2]));
     let mut dfas = Vec::new();
