@@ -30,7 +30,7 @@ fn main() {
             pattern = fix_str(tmp_strs[0])
         }
         else {pattern = translate_reg(&pattern)}
-        print!("*****************\n{:?}]--#--[{}\n*******************\n", &pattern, &sent.action);
+        // print!("*****************\n{:?}]--#--[{}\n*******************\n", &pattern, &sent.action);
         let tmp_dfa = minimize_dfa(&convert(&pattern));
         dfas.push(tmp_dfa);
     }
