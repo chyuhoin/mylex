@@ -33,6 +33,7 @@ FILE* yyin = NULL;
 FILE* yyout = NULL;
 char *yytext = NULL;
 int yyleng = 0;
+int yytag = 0;
 int yywarp();
 int yylex();
     "#, text);
@@ -151,6 +152,7 @@ void yyinit() {{
     if (yyout == NULL) yyout = stdout;
 
     yytext = malloc(sizeof(char) * 100);
+    for (int i = 0; i < 100; i++) yytext[i] = 0;
 
     int i;
     for(i = 1; i <= yy_edge_num; i++) {{
@@ -164,12 +166,14 @@ int yylex() {{
     int res = 0;
 
     while(1) {{
+        if (yytag) yytext[0] = yytag, yytext[yyleng = 1] = 0;
         char c = fgetc(yyin);
         if (feof(yyin))  break;
         res = yy_match(c);
         yytext[yyleng++] = c;
         if (res != 0) break;
     }}
+    yytext[--yyleng] = 0;
 
     return res;
 }}
