@@ -16,7 +16,7 @@ KEY   if|else|int|double|return
 %%
 int main(int argc, char **argv)
 {
-  yyin = fopen("test.txt", "r");
+  yyin = fopen(argv[1], "r");
   yylex();
   printf("\nMARK=%d  KEY=%d",mark,key);
   yywrap();

@@ -40,7 +40,7 @@ VALUE [1-9]+{DIGIT}*|{DIGIT}+\.{DIGIT}+
 %%
 int main(int argc, char **argv)
 {
-  yyin = fopen("test.txt", "r");
+  yyin = fopen(argv[1], "r");
   yylex();
   yywrap();
 }

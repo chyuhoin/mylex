@@ -34,7 +34,7 @@ FILE* yyout = NULL;
 char *yytext = NULL;
 int yyleng = 0;
 int yytag = 0;
-int yywarp();
+int yywrap();
 int yylex();
     "#, text);
     if let Err(e) = writeln!(file, "{}\n", shader.trim()) {
@@ -133,7 +133,7 @@ int yy_match(char c) {{
     if(forward == 0) {{
         res = yywork(yy_vertexs_tag[yy_state]);
         forward = yy_dfa[1][c];
-        yyleng = 0;
+        yytag = c;
     }}
     yy_state = forward;
     return res;
@@ -152,9 +152,9 @@ void yyinit() {{
     if (yyout == NULL) yyout = stdout;
 
     yytext = malloc(sizeof(char) * 100);
-    for (int i = 0; i < 100; i++) yytext[i] = 0;
-
     int i;
+    for (i = 0; i < 100; i++) yytext[i] = 0;
+
     for(i = 1; i <= yy_edge_num; i++) {{
         add_edge(yy_edges[i].from, yy_edges[i].to, yy_edges[i].val);
     }}
@@ -168,7 +168,8 @@ int yylex() {{
     while(1) {{
         if (yytag) yytext[0] = yytag, yytext[yyleng = 1] = 0;
         char c = fgetc(yyin);
-        if (feof(yyin))  break;
+        if (feof(yyin) && yytag == '\377')  break;
+        if (yytag) yytag = 0;
         res = yy_match(c);
         yytext[yyleng++] = c;
         if (res != 0) break;
